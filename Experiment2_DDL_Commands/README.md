@@ -105,25 +105,35 @@ CREATE TABLE Table_Name (
 
 **Question 1**
 --
-Insert a customer with CustomerID 301, Name Michael Jordan, Address 123 Maple St, City Chicago, and ZipCode 60616 into the Customers table.
+Create a table named Products with the following columns:
 
+ProductID as INTEGER
+ProductName as TEXT
+Price as REAL
+Stock as INTEGER
 For example:
 
 Test	Result
-SELECT * FROM Customers WHERE CustomerID = 301;
-CustomerID  Name            Address       City        ZipCode
-----------  --------------  ------------  ----------  ----------
-301         Michael Jordan  123 Maple St  Chicago     60616
-
+pragma table_info('Products');
+cid   name        type        notnull     dflt_value  pk
+----  ----------  ----------  ----------  ----------  ----------
+0     ProductID   INTEGER     0                       0
+1     ProductNam  TEXT        0                       0
+2     Price       REAL        0                       0
+3     Stock       INTEGER     0                       0
 
 ```sql
-INSERT INTO Customers (CustomerID, Name, Address, City, Zipcode)
-VALUES (301, 'Michael Jordan', '123 Maple St', 'Chicago', 60616);
+CREATE TABLE Products (
+    ProductID INTEGER,
+    ProductName TEXT,
+    Price REAL,
+    Stock INTEGER
+);
 ```
 
 **Output:**
 
-<img width="1229" height="328" alt="image" src="https://github.com/user-attachments/assets/a08ab634-8a17-425d-bfca-24a85b6e2edf" />
+<img width="1817" height="654" alt="image" src="https://github.com/user-attachments/assets/895539d4-1bce-4f30-92c5-26901ecee211" />
 
 
 **Question 2**
