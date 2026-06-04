@@ -138,42 +138,61 @@ CREATE TABLE Products (
 
 **Question 2**
 ---
- Write a SQL query to Add a new column State as text in the Student_details table.
-
-Sample table: Student_details
-
- cid              name             type   notnull     dflt_value  pk
----------------  ---------------  -----  ----------  ----------  ----------
-0                RollNo           int    0                       1
-1                Name             VARCH  1                       0
-2                Gender           TEXT   1                       0
-3                Subject          VARCH  0                       0
-4                MARKS            INT (  0                       0
+Create a table named Invoices with the following constraints:
+InvoiceID as INTEGER should be the primary key.
+InvoiceDate as DATE.
+Amount as REAL should be greater than 0.
+DueDate as DATE should be greater than the InvoiceDate.
+OrderID as INTEGER should be a foreign key referencing Orders(OrderID).
 For example:
 
 Test	Result
-pragma table_info('Student_details');
-cid         name        type        notnull     dflt_value  pk
-----------  ----------  ----------  ----------  ----------  ----------
-0           RollNo      int         0                       1
-1           Name        VARCHAR(10  1                       0
-2           Gender      TEXT        1                       0
-3           Subject     VARCHAR(30  0                       0
-4           MARKS       INT (3)     0                       0
-5           State       TEXT        0                       0
-
-
+INSERT INTO Orders (OrderID, OrderDate, CustomerID) VALUES (1, '2024-08-01', 1);
+INSERT INTO Invoices (InvoiceID, InvoiceDate, Amount, DueDate, OrderID) VALUES (1, '2024-08-01', 100.0, '2024-09-01', 1);
+SELECT * FROM Invoices;
 ```sql
--- ALTER TABLE Student_details
-ADD COLUMN State TEXT;
+CREATE TABLE Invoices (
+    InvoiceID INTEGER PRIMARY KEY,
+    InvoiceDate DATE,
+    Amount REAL CHECK (Amount > 0),
+    DueDate DATE CHECK (DueDate > InvoiceDate),
+    OrderID INTEGER,
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
+);
 ```
 
 **Output:**
-
-<img width="1238" height="450" alt="image" src="https://github.com/user-attachments/assets/a5064f37-9613-4534-86a3-5ac1f8fe8108" />
+<img width="1823" height="584" alt="image" src="https://github.com/user-attachments/assets/d3dc186d-fc89-4b8f-bb47-cbe8cb81cd6a" />
 
 
 **Question 3**
+---
+Create a table named Invoices with the following constraints:
+
+InvoiceID as INTEGER should be the primary key.
+InvoiceDate as DATE.
+DueDate as DATE should be greater than the InvoiceDate.
+Amount as REAL should be greater than 0.
+For example:
+
+Test	Result
+INSERT INTO Invoices (InvoiceID, InvoiceDate)
+VALUES (1, '2024-08-08'),(1,'2024-09-08');
+Error: UNIQUE constraint failed: Invoices.InvoiceID
+
+```sql
+CREATE TABLE Invoices (
+    InvoiceID INTEGER PRIMARY KEY,
+    InvoiceDate DATE,
+    DueDate DATE CHECK (DueDate > InvoiceDate),
+    Amount REAL CHECK (Amount > 0)
+);
+```
+
+**Output:**
+<img width="1814" height="581" alt="image" src="https://github.com/user-attachments/assets/650e4e3d-7c79-4127-a338-d983c0320675" />
+
+**Question 4**
 ---
 Create a table named Shipments with the following constraints:
 ShipmentID as INTEGER should be the primary key.
@@ -184,240 +203,187 @@ For example:
 
 Test	Result
 INSERT INTO Shipments (ShipmentID, ShipmentDate, SupplierID, OrderID) VALUES (2, '2024-08-03', 99, 1);
-Error: FOREIGN KEY constraint failed
-
-
-
+Error: FOREIGN KEY
 ```sql
--- CREATE TABLE Shipments (
+CREATE TABLE Shipments (
     ShipmentID INTEGER PRIMARY KEY,
     ShipmentDate DATE,
-    SupplierID INTEGER REFERENCES Suppliers(SupplierID),
-    OrderID INTEGER REFERENCES Orders(OrderID)
+    SupplierID INTEGER,
+    OrderID INTEGER,
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
 );
 ```
 
 **Output:**
-
-<img width="1221" height="322" alt="image" src="https://github.com/user-attachments/assets/ec8fe521-6f59-4427-8615-aa35bcb8425c" />
-
-
-**Question 4**
----
-Create a new table named orders with the following specifications:
-ord_id as TEXT with a length of 4.
-item_id as TEXT.
-ord_date as DATE.
-ord_qty as INTEGER.
-cost as INTEGER.
-The primary key is a composite key consisting of item_id and ord_date.
-ord_id and item_id should not accept NULL
-For example:
-
-Test	Result
-INSERT INTO orders (ord_id, item_id, ord_date, ord_qty, cost) VALUES ('O001', 'I001', '2023-08-01', 10, 100);
-SELECT * FROM orders;
-ord_id      item_id     ord_date    ord_qty     cost
-----------  ----------  ----------  ----------  ----------
-O001        I001        2023-08-01     10         100
-
-```sql
--- CREATE TABLE orders (
-    ord_id TEXT NOT NULL CHECK (LENGTH(ord_id) = 4),
-    item_id TEXT NOT NULL,
-    ord_date DATE,
-    ord_qty INTEGERS,
-    cost INTEGER,
-    PRIMARY KEY (item_id, ord_date)
-);
-```
-
-**Output:**
-
-<img width="1199" height="403" alt="image" src="https://github.com/user-attachments/assets/e87b24af-76f4-49c9-8e7e-629cb4360f48" />
-
+<img width="1829" height="508" alt="image" src="https://github.com/user-attachments/assets/fbf48c01-5b34-471b-bcc5-d44fa771fe51" />
 
 **Question 5**
----In the Student_details table, insert a student record where some fields are NULL, another record where all fields are filled without any NULL values, and a third record where some fields are filled, and others are left as NULL.
+Write an SQL query to add a new column salary of type INTEGER to the Employees table, with a CHECK constraint that ensures the value in this column is greater than 0.
 
-RollNo      Name            Gender      Subject      MARKS
-----------  ------------    ----------  ----------   ----------
-205         Olivia Green    F
-207         Liam Smith      M           Mathematics  85
-208         Sophia Johnson  F           Science
-For example:
+ 
 
-Test	Result
-select * from Student_details;
-RollNo      Name          Gender      Subject     MARKS
-----------  ------------  ----------  ----------  ----------
-205         Olivia Green  F
-207         Liam Smith    M           Mathematic  85
-208         Sophia Johns  F           Science
-
-```sql
--- INSERT INTO Student_details (RollNo, Name, Gender, Subject, MARKS)
-VALUES (205, 'Olivia Green', 'F', NULL, NULL);
-INSERT INTO Student_details (RollNO, Name, Gender, Subject, MARKS)
-VALUES (207, 'Liam Smith', 'M', 'Mathematic', 85);
-INSERT INTO Student_details (RollNo, Name, Gender, Subject, MARKS)
-VALUES (208, 'Sophia Johnson', 'F', 'Science', NULL);
-```
-
-**Output:**
-
-<img width="1214" height="375" alt="image" src="https://github.com/user-attachments/assets/350f12e8-6565-4560-8011-ed9b47f41fb1" />
-
-
-**Question 6**
----
- Create a table named Events with the following columns:
-
-EventID as INTEGER
-EventName as TEXT
-EventDate as DATE
-For example:
-
-Test	Result
-pragma table_info('Events');
-cid         name        type        notnull     dflt_value  pk
-----------  ----------  ----------  ----------  ----------  ----------
-0           EventID     INTEGER     0                       0
-1           EventName   TEXT        0                       0
-2           EventDate   DATE        0                       0
-
-
-```sql
--- CREATE TABLE Events (
-    EventID INTEGER,
-    EventName TEXT,
-    EventDate DATE
-);
-```
-
-**Output:**
-
-<img width="1229" height="461" alt="image" src="https://github.com/user-attachments/assets/491d9661-0718-4601-8839-28259c7247be" />
-
-
-**Question 7**
----Insert all students from Archived_students table into the Student_details table.
-
-cid         name        type        notnull     dflt_value  pk
-----------  ----------  ----------  ----------  ----------  ----------
-0           RollNo      INT           0                       1
-1           Name        VARCHAR(100)  0                       0
-2           Gender      VARCHAR(10)   0                       0
-3           Subject     VARCHAR(50)   0                       0
-4           MARKS       INT           0                       0
-For example:
-
-Test	Result
-select * from student_details;
-RollNo      Name           Gender      Subject     MARKS
-----------  -------------  ----------  ----------  ----------
-1           Alice Johnson  Female      Math        85
-2           Bob Smith      Male        Science     90
-3           Charlie Brown  Male        English     78
-
-```sql
--- INSERT INTO student_details
-SELECT * FROM Archived_students;
-```
-
-**Output:**
-
-<img width="1222" height="377" alt="image" src="https://github.com/user-attachments/assets/11b2d81d-35ce-4f50-b649-6c962093dda2" />
-
-
-**Question 8**
----
- Write a SQL query to Rename the "city" column to "location" in the "customer" table.
-
-Sample table: customer
-
- customer_id |   cust_name    |    city    | grade | salesman_id 
--------------+----------------+------------+-------+-------------
-        3002 | Nick Rimando   | New York   |   100 |        5001
-        3007 | Brad Davis     | New York   |   200 |        5001
-        3005 | Graham Zusi    | California |   200 |        5002
  
 
 For example:
 
 Test	Result
-pragma table_info('customer');
-cid         name         type                               notnull     dflt_value  pk
-----------  -----------  ---------------------------------  ----------  ----------  ----------
-0           customer_id  integer primarykey auto increment  0                       0
-1           cust_name    varchar2(30)                       0                       0
-2           location     varchar(30)                        0                       0
-3           grade        number                             0                       0
-4           salesman_id  number                             0                       0
-
+pragma table_info('employees');
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           id          INTEGER     0                       1
+1           name        TEXT        1                       0
+2           salary      INTEGER     0                       0
 ```sql
--- ALTER TABLE customer
-RENAME COLUMN city TO location;
+ALTER TABLE Employees
+ADD COLUMN salary INTEGER CHECK (salary > 0);
 ```
 
 **Output:**
+<img width="1796" height="584" alt="image" src="https://github.com/user-attachments/assets/a5f34156-3e4f-494f-b1c5-74f2dcceff58" />
 
-<img width="1222" height="435" alt="image" src="https://github.com/user-attachments/assets/5c43f47d-de8d-48ec-b5a3-0c0d33ba74fc" />
+**Question 6**
+---
+Insert the below data into the Employee table, allowing the Department and Salary columns to take their default values.
 
+EmployeeID  Name         Position
+----------  -----------  ----------
+4           Emily White  Analyst
+
+Note: The Department and Salary columns will use their default values.    
+For example:
+
+Test	Result
+SELECT EmployeeID, Name, Position 
+FROM Employee;
+EmployeeID  Name         Position
+----------  -----------  ----------
+4           Emily White  Analyst
+
+```sql
+INSERT INTO Employee (EmployeeID, Name, Position)
+VALUES (4, 'Emily White', 'Analyst');
+```
+
+**Output:**
+<img width="1827" height="635" alt="image" src="https://github.com/user-attachments/assets/f86d0336-e3bd-4303-bbbe-9657ef8b4c01" />
+
+**Question 7**
+In the Employee table, insert a record where some fields are NULL, another record where all fields are filled without any NULL values, and a third record where some fields are filled, and others are left as NULL.
+
+EmployeeID  Name          Position    Department  Salary
+----------  ------------  ----------  ----------  ----------
+5           George Clark  Consultant
+7           Noah Davis    Manager     HR          60000
+8           Ava Miller    Consultant  IT
+ 
+
+For example:
+
+Test	Result
+SELECT * FROM Employee;
+EmployeeID  Name          Position    Department  Salary
+----------  ------------  ----------  ----------  ----------
+5           George Clark  Consultant
+7           Noah Davis    Manager     HR          60000
+8           Ava Miller    Consultant  IT
+
+```sql
+INSERT INTO Employee (EmployeeID, Name, Position)
+VALUES (5, 'George Clark', 'Consultant');
+
+INSERT INTO Employee (EmployeeID, Name, Position, Department, Salary)
+VALUES (7, 'Noah Davis', 'Manager', 'HR', 60000);
+
+INSERT INTO Employee (EmployeeID, Name, Position, Department)
+VALUES (8, 'Ava Miller', 'Consultant', 'IT');
+```
+
+**Output:**
+<img width="1812" height="607" alt="image" src="https://github.com/user-attachments/assets/0cebcbb7-6a88-408f-a6ba-224aa2ac7525" />
+
+**Question 8**
+---
+Insert all customers from Old_customers into Customers
+
+Table attributes are CustomerID, Name, Address, Email
+
+For example:
+
+Test	Result
+select * from Customers;
+CustomerID  Name             Address         Email
+----------  ---------------  --------------  ---------------------
+301         Michael Johnson  123 Elm Street  michael.j@example.com
+302         Sarah Lee        456 Oak Avenue  sarah.lee@example.com
+303         David Wilson     789 Pine Road   david.w@example.com
+```sql
+INSERT INTO Customers (CustomerID, Name, Address, Email)
+SELECT CustomerID, Name, Address, Email
+FROM Old_customers;
+```
+
+**Output:**
+<img width="1802" height="585" alt="image" src="https://github.com/user-attachments/assets/64cfa665-3229-40fb-aacc-9246a296cc82" />
 
 **Question 9**
 ---
- Insert all employees from Former_employees into Employee
-
-Table attributes are EmployeeID, Name, Department, Salary
-
+Create a table named Bonuses with the following constraints:
+BonusID as INTEGER should be the primary key.
+EmployeeID as INTEGER should be a foreign key referencing Employees(EmployeeID).
+BonusAmount as REAL should be greater than 0.
+BonusDate as DATE.
+Reason as TEXT should not be NULL.
 For example:
 
 Test	Result
-select * from Employee;
-EmployeeID  Name        Department  Salary
-----------  ----------  ----------  ----------
-201         John Doe    HR          50000
-202         Jane Smith  Engineerin  75000
-203         Emily Davi  Marketing   60000
-
+INSERT INTO Bonuses (BonusID, EmployeeID, BonusAmount, BonusDate, Reason) VALUES (1, 6, 1000.0, '2024-08-01', 'Outstanding performance');
+SELECT * FROM Bonuses;
 ```sql
--- INSERT INTO Employee (EmployeeID, Name, Department, Salary)
-SELECT EmployeeID, Name, Department, Salary
-From Former_employees;
+CREATE TABLE Bonuses (
+    BonusID INTEGER PRIMARY KEY,
+    EmployeeID INTEGER,
+    BonusAmount REAL CHECK (BonusAmount > 0),
+    BonusDate DATE,
+    Reason TEXT NOT NULL,
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
 ```
 
 **Output:**
-
-<img width="1235" height="350" alt="image" src="https://github.com/user-attachments/assets/32835658-d94d-4186-8b2f-00f43adb0fca" />
-
+<img width="1819" height="604" alt="image" src="https://github.com/user-attachments/assets/e910dee2-cee4-45ef-b524-8a29b4cb074d" />
 
 **Question 10**
 ---
- Write a SQL Query  to add attribute Date_of_joining as Date and rename the attribute job_title as Designation in the table 'Employees'
+Write a SQL Query  to add attribute ISBN as varchar(30) and domain_dept as varchar(30) in the table 'books'
+
+ 
+
+ 
 
 For example:
 
 Test	Result
-pragma table_info('Employees');
-cid         name         type        notnull     dflt_value  pk
-----------  -----------  ----------  ----------  ----------  ----------
-0           employee_id  INT         0                       1
-1           first_name   VARCHAR(50  0                       0
-2           last_name    VARCHAR(50  0                       0
-3           Designation  VARCHAR(10  0                       0
-4           Date_of_joi  Date        0                       0
-
+pragma table_info('books');
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           book_id     INT         0                       1
+1           title       VARCHAR(15  0                       0
+2           author      VARCHAR(10  0                       0
+3           genre       VARCHAR(50  0                       0
+4           publicatio  INT         0                       0
+5           ISBN        varchar(30  0                       0
+6           domain_dep  varchar(30  0                       0
 ```sql
--- ALTER TABLE Employees ADD Date_of_joining Date;
-ALTER TABLE Employees RENAME COLUMN job_title TO Designation;
+ALTER TABLE books
+ADD COLUMN ISBN varchar(30);
+
+ALTER TABLE books
+ADD COLUMN domain_dept varchar(30);
 ```
 
 **Output:**
-
-<img width="1213" height="425" alt="image" src="https://github.com/user-attachments/assets/2048d8bb-68dd-4a59-ac04-6dd3bbb552aa" />
-
-
+<img width="1817" height="766" alt="image" src="https://github.com/user-attachments/assets/e35b4791-f613-40f1-8ee8-003da89a5b23" />
 
 ## RESULT
 Thus, the SQL queries to implement different types of constraints and DDL commands have been executed successfully.
